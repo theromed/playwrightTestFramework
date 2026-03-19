@@ -164,9 +164,6 @@ pipeline {
                                 "issuetype": { "name": "Test Execution" },
                                 "summary": "Jenkins Build #${env.BUILD_NUMBER} — ${suite} [${testEnv}]",
                                 "description": "Automated test run from Jenkins.\\nBuild: ${env.BUILD_URL}\\nAllure: ${env.BUILD_URL}allure"
-                            },
-                            "xrayFields": {
-                                "environments": ["${testEnv}"]
                             }
                         }"""
                     ])
