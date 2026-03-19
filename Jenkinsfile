@@ -166,7 +166,6 @@ pipeline {
                                 "description": "Automated test run from Jenkins.\\nBuild: ${env.BUILD_URL}\\nAllure: ${env.BUILD_URL}allure"
                             },
                             "xrayFields": {
-                                "testPlanKey": "${testPlanKey}",
                                 "environments": ["${testEnv}"]
                             }
                         }"""
