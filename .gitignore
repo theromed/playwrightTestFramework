@@ -2,6 +2,7 @@ node_modules/
 test-results/
 allure-results/
 allure-report/
+junit-results.xml
 .env
 *.har
 .DS_Store

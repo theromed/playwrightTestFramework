@@ -128,6 +128,81 @@ pipeline {
                        results: [[path: 'allure-results']]
             }
         }
+
+        stage('Import to Xray') {
+            steps {
+                script {
+                    def suite = params.TEST_SUITE ?: 'all'
+
+                    // Определяем Test Plan по типу прогона
+                    def testPlanKey = ''
+                    switch(suite) {
+                        case 'ui-sanity':
+                        case 'api-sanity':
+                            testPlanKey = 'QA-200'  // Sanity Plan
+                            break
+                        case 'all':
+                            testPlanKey = 'QA-201'  // Regression Plan
+                            break
+                        default:
+                            testPlanKey = 'QA-202'  // Ad-hoc Plan
+                    }
+
+                    def testEnv = params.BASE_URL.contains('staging') ? 'Staging' :
+                                  params.BASE_URL.contains('production') ? 'Production' : 'Local'
+
+                    step([$class: 'XrayImportBuilder',
+                        endpointName: '/junit/multipart',
+                        importFilePath: 'junit-results.xml',
+                        importToSameExecution: 'true',
+                        projectKey: 'QA',
+                        serverInstance: 'xray-cloud',
+                        importInfo: """{
+                            "fields": {
+                                "project": { "key": "QA" },
+                                "summary": "Jenkins Build #${env.BUILD_NUMBER} — ${suite} [${testEnv}]",
+                                "description": "Automated test run from Jenkins.\\nBuild: ${env.BUILD_URL}\\nAllure: ${env.BUILD_URL}allure"
+                            },
+                            "xpiFields": {
+                                "testPlanKey": "${testPlanKey}",
+                                "environments": ["${testEnv}"]
+                            }
+                        }""",
+                        testImportInfo: """{
+                            "fields": {
+                                "project": { "key": "QA" }
+                            }
+                        }"""
+                    ])
+                }
+            }
+        }
+
+        stage('Create Bugs for Failures') {
+            when {
+                expression { env.TEST_EXIT_CODE != '0' }
+            }
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'jira-api-token',
+                        usernameVariable: 'JIRA_USER',
+                        passwordVariable: 'JIRA_TOKEN'
+                    )
+                ]) {
+                    sh '''#!/bin/bash
+                        node scripts/createBugsFromJunit.js \
+                            --junit=junit-results.xml \
+                            --jiraUrl=https://theromed.atlassian.net \
+                            --jiraUser=$JIRA_USER \
+                            --jiraToken=$JIRA_TOKEN \
+                            --projectKey=KAN \
+                            --buildUrl=$BUILD_URL \
+                            --buildNumber=$BUILD_NUMBER
+                    '''
+                }
+            }
+        }
     }
 
     post {

@@ -17,6 +17,11 @@ export default defineConfig({
       detail: true,
       suiteTitle: true,
     }],
+    ['junit', {
+      outputFile: 'junit-results.xml',
+      embedAnnotationsAsProperties: true,
+      includeProjectInTestName: false,
+    }],
   ],
 
   use: {
