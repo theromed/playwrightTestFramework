@@ -139,13 +139,13 @@ pipeline {
                     switch(suite) {
                         case 'ui-sanity':
                         case 'api-sanity':
-                            testPlanKey = 'QA-200'  // Sanity Plan
+                            testPlanKey = 'QA-51'   // Sanity Plan
                             break
                         case 'all':
-                            testPlanKey = 'QA-201'  // Regression Plan
+                            testPlanKey = 'QA-52'   // Regression Plan
                             break
                         default:
-                            testPlanKey = 'QA-202'  // Ad-hoc Plan
+                            testPlanKey = 'QA-53'   // Ad-hoc Plan
                     }
 
                     def testEnv = params.BASE_URL.contains('staging') ? 'Staging' :
