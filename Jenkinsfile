@@ -157,20 +157,16 @@ pipeline {
                         importToSameExecution: 'true',
                         projectKey: 'QA',
                         serverInstance: '4995819d-31bd-4f50-9571-da943e6d80fc',
+                        inputInfoSwitcher: 'fileContent',
                         importInfo: """{
                             "fields": {
                                 "project": { "key": "QA" },
                                 "summary": "Jenkins Build #${env.BUILD_NUMBER} — ${suite} [${testEnv}]",
                                 "description": "Automated test run from Jenkins.\\nBuild: ${env.BUILD_URL}\\nAllure: ${env.BUILD_URL}allure"
                             },
-                            "xpiFields": {
+                            "xray:fields": {
                                 "testPlanKey": "${testPlanKey}",
                                 "environments": ["${testEnv}"]
-                            }
-                        }""",
-                        testImportInfo: """{
-                            "fields": {
-                                "project": { "key": "QA" }
                             }
                         }"""
                     ])
