@@ -156,7 +156,7 @@ pipeline {
                         importFilePath: 'junit-results.xml',
                         importToSameExecution: 'true',
                         projectKey: 'QA',
-                        serverInstance: 'xray-cloud',
+                        serverInstance: '4995819d-31bd-4f50-9571-da943e6d80fc',
                         importInfo: """{
                             "fields": {
                                 "project": { "key": "QA" },
