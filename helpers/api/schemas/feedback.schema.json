@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["status", "data"],
+  "properties": {
+    "status": { "type": "string", "const": "success" },
+    "data": {
+      "type": "object",
+      "required": ["id", "comment", "rating"],
+      "properties": {
+        "id":      { "type": "integer" },
+        "comment": { "type": "string" },
+        "rating":  { "type": "integer", "minimum": 1, "maximum": 5 }
+      }
+    }
+  }
+}

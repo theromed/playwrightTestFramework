@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["status", "data"],
+  "properties": {
+    "status": { "type": "string", "const": "success" },
+    "data": {
+      "type": "object",
+      "required": ["id", "Products"],
+      "properties": {
+        "id":       { "type": "integer" },
+        "Products": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "name", "price"],
+            "properties": {
+              "id":    { "type": "integer" },
+              "name":  { "type": "string" },
+              "price": { "type": "number" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

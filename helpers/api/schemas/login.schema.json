@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["authentication"],
+  "properties": {
+    "authentication": {
+      "type": "object",
+      "required": ["token", "bid", "umail"],
+      "properties": {
+        "token": { "type": "string", "minLength": 1 },
+        "bid":   { "type": "integer" },
+        "umail": { "type": "string", "format": "email" }
+      }
+    }
+  }
+}

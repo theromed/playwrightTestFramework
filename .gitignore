@@ -1,0 +1,9 @@
+node_modules/
+test-results/
+allure-results/
+allure-report/
+.env
+*.har
+.DS_Store
+.claude/
+.~lock.*
