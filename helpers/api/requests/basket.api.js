@@ -23,6 +23,15 @@ export class BasketAPI extends BaseAPI {
     });
   }
 
+  async updateItem(basketItemId, quantity, token) {
+    return await allure.step(`API: Update basket item ID=${basketItemId} quantity=${quantity}`, async () => {
+      return await this.put(`/api/BasketItems/${basketItemId}`, {
+        data: { quantity },
+        headers: this.authHeader(token),
+      });
+    });
+  }
+
   async removeItem(basketItemId, token) {
     return await allure.step(`API: Remove basket item ID=${basketItemId}`, async () => {
       return await this.delete(`/api/BasketItems/${basketItemId}`, {

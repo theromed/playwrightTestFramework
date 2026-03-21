@@ -9,6 +9,8 @@ import { AddressAPI }  from '../helpers/api/requests/address.api.js';
 import { OrdersAPI }   from '../helpers/api/requests/orders.api.js';
 import { CardAPI }     from '../helpers/api/requests/card.api.js';
 import { SecurityQuestionsAPI } from '../helpers/api/requests/securityQuestions.api.js';
+import { ComplaintAPI }  from '../helpers/api/requests/complaint.api.js';
+import { ReviewsAPI }    from '../helpers/api/requests/reviews.api.js';
 import { apiLogger }   from '../utils/logger.js';
 import { ENV }         from '../config/env.js';
 import { URLS }        from '../config/urls.js';
@@ -61,6 +63,14 @@ export const test = base.extend({
 
   securityQuestionsAPI: async ({ request }, use) => {
     await use(new SecurityQuestionsAPI(request));
+  },
+
+  complaintAPI: async ({ request }, use) => {
+    await use(new ComplaintAPI(request));
+  },
+
+  reviewsAPI: async ({ request }, use) => {
+    await use(new ReviewsAPI(request));
   },
 
   // Авторизованный контекст (предустановленный JWT)
