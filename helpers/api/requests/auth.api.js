@@ -22,6 +22,15 @@ export class AuthAPI extends BaseAPI {
     });
   }
 
+  async changePassword(currentPassword, newPassword, repeatNewPassword, token) {
+    return await allure.step('API: Change password', async () => {
+      const query = `current=${encodeURIComponent(currentPassword)}&new=${encodeURIComponent(newPassword)}&repeat=${encodeURIComponent(repeatNewPassword)}`;
+      return await this.get(`/rest/user/change-password?${query}`, {
+        headers: this.authHeader(token),
+      });
+    });
+  }
+
   async register(email, password, passwordRepeat, securityQuestion, securityAnswer) {
     return await allure.step(`API: Register user ${email}`, async () => {
       return await this.post('/api/Users', {

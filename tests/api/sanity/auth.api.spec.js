@@ -48,4 +48,68 @@ test.describe('Auth API', () => {
     expect(body.user).toBeDefined();
     expect(body.user.email).toBeTruthy();
   });
+
+  test('Should reject login with empty credentials', async ({ authAPI }) => {
+    await allure.severity('normal');
+    await allure.feature('Authentication API');
+    await allure.story('Empty credentials');
+
+    // Act
+    const { status } = await authAPI.login('', '');
+
+    // Assert
+    expect(status).toBe(401);
+  });
+
+  test('Should return token for SQL injection in email', async ({ authAPI }) => {
+    await allure.severity('critical');
+    await allure.feature('Authentication API');
+    await allure.story('SQL injection attempt');
+
+    // NOTE: Juice Shop is intentionally vulnerable — SQL injection IS a valid login
+    // This test documents the known vulnerability
+
+    // Act
+    const { status, body } = await authAPI.login("' OR 1=1--", 'anything');
+
+    // Assert
+    expect(status).toBe(200);
+    expect(body.authentication.token).toBeTruthy();
+  });
+
+  test('Should return user data via authentication details', async ({ authAPI, authToken }) => {
+    await allure.severity('normal');
+    await allure.feature('Authentication API');
+    await allure.story('Authentication details');
+
+    // Act
+    const { status, body } = await authAPI.whoAmI(authToken);
+
+    // Assert
+    expect(status).toBe(200);
+    expect(body.user).toBeDefined();
+    expect(body.user.email).toContain('@');
+  });
+
+  test('Should change password via API', async ({ authAPI, tempUser }) => {
+    await allure.severity('critical');
+    await allure.feature('Authentication API');
+    await allure.story('Change password API');
+
+    // Arrange
+    const newPassword = 'Changed123!';
+
+    // Act
+    const { status } = await authAPI.changePassword(
+      tempUser.password, newPassword, newPassword, tempUser.token
+    );
+
+    // Assert
+    expect(status).toBe(200);
+
+    // Verify new password works
+    const loginResult = await authAPI.login(tempUser.email, newPassword);
+    expect(loginResult.status).toBe(200);
+    expect(loginResult.body.authentication.token).toBeTruthy();
+  });
 });
