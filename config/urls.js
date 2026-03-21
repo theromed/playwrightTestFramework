@@ -8,7 +8,7 @@ export const URLS = {
   about:          '/#/about',
   scoreBoard:     '/#/score-board',
   administration: '/#/administration',
-  profile:        '/#/profile',
+  profile:        '/profile',
   changePassword: '/#/privacy-security/change-password',
   forgotPassword: '/#/forgot-password',
   addressSelect:  '/#/address/select',

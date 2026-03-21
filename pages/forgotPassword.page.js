@@ -3,7 +3,7 @@ export class ForgotPasswordPage {
     this.page = page;
 
     this.emailInput            = page.locator('#email');
-    this.securityQuestionSelect = page.locator('#securityQuestion');
+    this.securityQuestionLabel  = page.locator('mat-form-field:has(#securityAnswer) label');
     this.securityAnswerInput   = page.locator('#securityAnswer');
     this.newPasswordInput      = page.locator('#newPassword');
     this.repeatPasswordInput   = page.locator('#newPasswordRepeat');

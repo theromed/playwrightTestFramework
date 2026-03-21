@@ -15,6 +15,8 @@ import { AdministrationPage }   from '../pages/administration.page.js';
 import { UserProfilePage }      from '../pages/userProfile.page.js';
 import { ChangePasswordPage }   from '../pages/changePassword.page.js';
 import { ForgotPasswordPage }   from '../pages/forgotPassword.page.js';
+import { AboutPage }           from '../pages/about.page.js';
+import { ComplaintPage }       from '../pages/complaint.page.js';
 
 import { WelcomeBannerComponent }      from '../components/welcomeBanner.component.js';
 import { CookieBannerComponent }      from '../components/cookieBanner.component.js';
@@ -28,7 +30,9 @@ import { CheckoutInteractions }       from '../helpers/page-interactions/checkou
 import { ContactInteractions }        from '../helpers/page-interactions/contact.interactions.js';
 import { NavigationInteractions }     from '../helpers/page-interactions/navigation.interactions.js';
 import { AdministrationInteractions } from '../helpers/page-interactions/administration.interactions.js';
-import { ChangePasswordInteractions } from '../helpers/page-interactions/changePassword.interactions.js';
+import { ChangePasswordInteractions }    from '../helpers/page-interactions/changePassword.interactions.js';
+import { ForgotPasswordInteractions }    from '../helpers/page-interactions/forgotPassword.interactions.js';
+import { UserProfileInteractions }       from '../helpers/page-interactions/userProfile.interactions.js';
 
 export class POManager {
   constructor(page) {
@@ -112,6 +116,14 @@ export class POManager {
     return this._getOrCreate('forgotPasswordPage', () => new ForgotPasswordPage(this.page));
   }
 
+  get aboutPage() {
+    return this._getOrCreate('aboutPage', () => new AboutPage(this.page));
+  }
+
+  get complaintPage() {
+    return this._getOrCreate('complaintPage', () => new ComplaintPage(this.page));
+  }
+
   // --- Components ---
 
   get welcomeBanner() {
@@ -176,5 +188,15 @@ export class POManager {
   get changePasswordInteractions() {
     return this._getOrCreate('changePasswordInteractions',
       () => new ChangePasswordInteractions(this.changePasswordPage));
+  }
+
+  get forgotPasswordInteractions() {
+    return this._getOrCreate('forgotPasswordInteractions',
+      () => new ForgotPasswordInteractions(this.forgotPasswordPage));
+  }
+
+  get userProfileInteractions() {
+    return this._getOrCreate('userProfileInteractions',
+      () => new UserProfileInteractions(this.userProfilePage));
   }
 }

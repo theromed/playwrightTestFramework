@@ -15,5 +15,7 @@ export class ProductListPage {
     this.productCards       = page.locator('mat-grid-tile');
     this.itemsPerPageSelect = page.locator('mat-select[aria-label="Items per page:"]');
     this.paginator          = page.locator('mat-paginator');
+    this.nextPageButton     = page.locator('button[aria-label="Next page"]');
+    this.paginatorRange     = page.locator('.mat-mdc-paginator-range-label');
   }
 }
