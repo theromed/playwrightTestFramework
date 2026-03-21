@@ -18,6 +18,9 @@ export class ProductDetailPage {
     this.submitReview    = page.locator('mat-dialog-container #submitButton');
     this.reviewsList     = page.locator('mat-dialog-container .review-text');
 
+    // Actions
+    this.addToBasketButton = page.locator('mat-dialog-container button:has-text("Add to Basket")');
+
     // Close
     this.closeButton     = page.locator('mat-dialog-container button[aria-label="Close Dialog"]');
   }

@@ -17,9 +17,12 @@ import { ChangePasswordPage }   from '../pages/changePassword.page.js';
 import { ForgotPasswordPage }   from '../pages/forgotPassword.page.js';
 import { AboutPage }           from '../pages/about.page.js';
 import { ComplaintPage }       from '../pages/complaint.page.js';
+import { DeluxePage }          from '../pages/deluxe.page.js';
+import { OrderHistoryPage }   from '../pages/orderHistory.page.js';
 
 import { WelcomeBannerComponent }      from '../components/welcomeBanner.component.js';
 import { CookieBannerComponent }      from '../components/cookieBanner.component.js';
+import { SidebarComponent }           from '../components/sidebar.component.js';
 
 import { LoginInteractions }          from '../helpers/page-interactions/login.interactions.js';
 import { RegistrationInteractions }   from '../helpers/page-interactions/registration.interactions.js';
@@ -33,6 +36,7 @@ import { AdministrationInteractions } from '../helpers/page-interactions/adminis
 import { ChangePasswordInteractions }    from '../helpers/page-interactions/changePassword.interactions.js';
 import { ForgotPasswordInteractions }    from '../helpers/page-interactions/forgotPassword.interactions.js';
 import { UserProfileInteractions }       from '../helpers/page-interactions/userProfile.interactions.js';
+import { SidebarInteractions }          from '../helpers/page-interactions/sidebar.interactions.js';
 
 export class POManager {
   constructor(page) {
@@ -124,6 +128,14 @@ export class POManager {
     return this._getOrCreate('complaintPage', () => new ComplaintPage(this.page));
   }
 
+  get deluxePage() {
+    return this._getOrCreate('deluxePage', () => new DeluxePage(this.page));
+  }
+
+  get orderHistoryPage() {
+    return this._getOrCreate('orderHistoryPage', () => new OrderHistoryPage(this.page));
+  }
+
   // --- Components ---
 
   get welcomeBanner() {
@@ -132,6 +144,10 @@ export class POManager {
 
   get cookieBanner() {
     return this._getOrCreate('cookieBanner', () => new CookieBannerComponent(this.page));
+  }
+
+  get sidebarComponent() {
+    return this._getOrCreate('sidebarComponent', () => new SidebarComponent(this.page));
   }
 
   // --- Interactions ---
@@ -198,5 +214,10 @@ export class POManager {
   get userProfileInteractions() {
     return this._getOrCreate('userProfileInteractions',
       () => new UserProfileInteractions(this.userProfilePage));
+  }
+
+  get sidebarInteractions() {
+    return this._getOrCreate('sidebarInteractions',
+      () => new SidebarInteractions(this.sidebarComponent));
   }
 }
