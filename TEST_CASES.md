@@ -1,34 +1,51 @@
 # OWASP Juice Shop — Test Cases
 
-> **Total: 35 test cases** across 16 spec files
+> **Total: 73 test cases** (71 active + 2 skipped) across 37 spec files
 > **Framework**: Playwright + Allure
 > **Pattern**: AAA (Arrange-Act-Assert)
-> **Last updated**: 2026-03-18
+> **Last updated**: 2026-03-21
 
 ---
 
 ## Table of Contents
 
-- [UI Sanity Tests (10)](#ui-sanity-tests)
+- [UI Sanity Tests (18)](#ui-sanity-tests)
   - [Login Page (3)](#1-login-page)
   - [Registration Page (3)](#2-registration-page)
   - [Navigation (2)](#3-navigation)
   - [Search (2)](#4-search)
-- [UI Regression Tests (12)](#ui-regression-tests)
-  - [Change Password (3)](#5-change-password)
-  - [Product Review (2)](#6-product-review)
-  - [Customer Feedback (2)](#7-customer-feedback)
-  - [Administration Panel (2)](#8-administration-panel)
-  - [Basket Page (2)](#9-basket-page)
-  - [Checkout Flow (1)](#10-checkout-flow)
-- [API Sanity Tests (7)](#api-sanity-tests)
-  - [Auth API (3)](#11-auth-api)
-  - [Products API (2)](#12-products-api)
-  - [Users API (2)](#13-users-api)
-- [API Regression Tests (6)](#api-regression-tests)
-  - [Feedback API (2)](#14-feedback-api)
-  - [Basket API (2)](#15-basket-api)
-  - [Orders API (2)](#16-orders-api)
+  - [About Us (1)](#5-about-us)
+  - [Pagination (2)](#6-pagination)
+  - [User Profile (2)](#7-user-profile)
+  - [Complaint (1)](#8-complaint)
+  - [Forgot Password (2 — skipped)](#9-forgot-password)
+- [UI Regression Tests (24)](#ui-regression-tests)
+  - [Change Password (3)](#10-change-password)
+  - [Product Review (2)](#11-product-review)
+  - [Customer Feedback (2)](#12-customer-feedback)
+  - [Administration Panel (2)](#13-administration-panel)
+  - [Basket Page (4)](#14-basket-page)
+  - [Checkout Flow (1)](#15-checkout-flow)
+  - [Product Detail (2)](#16-product-detail)
+  - [Search Extended (2)](#17-search-extended)
+  - [Sidebar Navigation (2)](#18-sidebar-navigation)
+  - [Score Board (1)](#19-score-board)
+  - [Deluxe Membership (1)](#20-deluxe-membership)
+  - [Forgot Password Extended (1)](#21-forgot-password-extended)
+  - [Order History (1)](#22-order-history)
+- [API Sanity Tests (15)](#api-sanity-tests)
+  - [Auth API (7)](#23-auth-api)
+  - [Products API (5)](#24-products-api)
+  - [Users API (2)](#25-users-api)
+  - [Security Questions API (1)](#26-security-questions-api)
+- [API Regression Tests (18)](#api-regression-tests)
+  - [Feedback API (2)](#27-feedback-api)
+  - [Basket API (5)](#28-basket-api)
+  - [Orders API (2)](#29-orders-api)
+  - [Address API (3)](#30-address-api)
+  - [Card API (2)](#31-card-api)
+  - [Complaint API (2)](#32-complaint-api)
+  - [Product Reviews API (2)](#33-product-reviews-api)
 
 ---
 
@@ -259,7 +276,7 @@ No product results are displayed. The "no results" indicator is visible (empty s
 
 ## UI Regression Tests
 
-### 5. Change Password
+### 10. Change Password
 
 **File**: `tests/ui/regression/changePassword.spec.js`
 **Suite**: `Change Password`
@@ -328,7 +345,7 @@ Error message is displayed indicating the current password is incorrect.
 
 ---
 
-### 6. Product Review
+### 11. Product Review
 
 **File**: `tests/ui/regression/productReview.spec.js`
 **Suite**: `Product Review`
@@ -372,7 +389,7 @@ Product name is visible. The product detail dialog container is displayed (with 
 
 ---
 
-### 7. Customer Feedback
+### 12. Customer Feedback
 
 **File**: `tests/ui/regression/feedback.spec.js`
 **Suite**: `Customer Feedback`
@@ -420,7 +437,7 @@ Submit button is disabled (cannot be clicked) because required fields (comment, 
 
 ---
 
-### 8. Administration Panel
+### 13. Administration Panel
 
 **File**: `tests/ui/regression/administration.spec.js`
 **Suite**: `Administration Panel`
@@ -465,7 +482,7 @@ The number of registered users in the table is greater than 0.
 
 ---
 
-### 9. Basket Page
+### 14. Basket Page
 
 **File**: `tests/ui/regression/basket.spec.js`
 **Suite**: `Basket Page`
@@ -511,7 +528,7 @@ Total price displays `0`, confirming the basket is empty.
 
 ---
 
-### 10. Checkout Flow
+### 15. Checkout Flow
 
 **File**: `tests/ui/regression/checkout.spec.js`
 **Suite**: `Checkout Flow`
@@ -548,7 +565,7 @@ Order confirmation page is displayed, confirming the order was successfully plac
 
 ## API Sanity Tests
 
-### 11. Auth API
+### 23. Auth API
 
 **File**: `tests/api/sanity/auth.api.spec.js`
 **Suite**: `Auth API`
@@ -609,7 +626,7 @@ Order confirmation page is displayed, confirming the order was successfully plac
 
 ---
 
-### 12. Products API
+### 24. Products API
 
 **File**: `tests/api/sanity/products.api.spec.js`
 **Suite**: `Products API`
@@ -653,7 +670,7 @@ Order confirmation page is displayed, confirming the order was successfully plac
 
 ---
 
-### 13. Users API
+### 25. Users API
 
 **File**: `tests/api/sanity/users.api.spec.js`
 **Suite**: `Users API`
@@ -699,7 +716,7 @@ Order confirmation page is displayed, confirming the order was successfully plac
 
 ## API Regression Tests
 
-### 14. Feedback API
+### 27. Feedback API
 
 **File**: `tests/api/regression/feedback.api.spec.js`
 **Suite**: `Feedback API`
@@ -746,7 +763,7 @@ Order confirmation page is displayed, confirming the order was successfully plac
 
 ---
 
-### 15. Basket API
+### 28. Basket API
 
 **File**: `tests/api/regression/basket.api.spec.js`
 **Suite**: `Basket API`
@@ -792,7 +809,7 @@ Order confirmation page is displayed, confirming the order was successfully plac
 
 ---
 
-### 16. Orders API
+### 29. Orders API
 
 **File**: `tests/api/regression/orders.api.spec.js`
 **Suite**: `Orders API`
@@ -836,24 +853,929 @@ Order confirmation page is displayed, confirming the order was successfully plac
 
 ---
 
+### 5. About Us
+
+**File**: `tests/ui/sanity/about.spec.js`
+**Suite**: `About Us`
+**Preconditions**: Home page is loaded via `homePage` fixture (banners dismissed)
+
+---
+
+#### TC-UI-S-011: Should display About Us page with company information
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | About Us                           |
+| **Story**        | Page content                       |
+| **Preconditions**| User is on Home page               |
+
+**Steps**:
+1. Navigate to the About Us page (`/#/about`)
+2. Observe the page content
+
+**Expected Result**:
+- "About Us" heading (`h1`) is visible
+- "Corporate History" section (`h2`) is visible
+
+---
+
+### 6. Pagination
+
+**File**: `tests/ui/sanity/pagination.spec.js`
+**Suite**: `Product List`
+**Preconditions**: Home page is loaded via `homePage` fixture (banners dismissed)
+
+---
+
+#### TC-UI-S-012: Should display products with pagination
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Critical                           |
+| **Feature**      | Product List                       |
+| **Story**        | Pagination                         |
+| **Preconditions**| User is on Home page               |
+
+**Steps**:
+1. Observe the paginator component
+2. Count the number of product cards on the first page
+
+**Expected Result**:
+- Paginator is visible
+- Product count is greater than 0 and less than or equal to 12
+
+---
+
+#### TC-UI-S-013: Should navigate to next page of products
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Product List                       |
+| **Story**        | Page navigation                    |
+| **Preconditions**| User is on Home page               |
+
+**Steps**:
+1. Note the product names on the current page
+2. Click the "Next page" button in the paginator
+
+**Expected Result**:
+The first product on the new page is different from the first product on the initial page, confirming page navigation occurred.
+
+---
+
+### 7. User Profile
+
+**File**: `tests/ui/sanity/profile.spec.js`
+**Suite**: `User Profile`
+**Preconditions**: Temporary user created via API (`tempUser` fixture). User logged in via UI. Navigated to Profile page (`/profile`).
+**Cleanup**: Temporary user is automatically deleted after test.
+
+---
+
+#### TC-UI-S-014: Should display user profile page
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | User Profile                       |
+| **Story**        | View profile                       |
+| **Preconditions**| Authenticated tempUser on Profile page |
+
+**Steps**:
+1. Observe the profile page
+
+**Expected Result**:
+Profile page is visible with the username input field displayed.
+
+---
+
+#### TC-UI-S-015: Should update username on profile page
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | User Profile                       |
+| **Story**        | Edit username                      |
+| **Preconditions**| Authenticated tempUser on Profile page |
+
+**Steps**:
+1. Enter a new username (format: `TestUser<timestamp>`) into the username field
+2. Click the Set Username button
+3. Reload the page
+
+**Expected Result**:
+After reload, the username field displays the newly set username, confirming persistence.
+
+---
+
+### 8. Complaint
+
+**File**: `tests/ui/sanity/complaint.spec.js`
+**Suite**: `Complaint`
+**Preconditions**: Temporary user created via API (`tempUser` fixture).
+**Cleanup**: Temporary user is automatically deleted after test.
+
+---
+
+#### TC-UI-S-016: Should display complaint form
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Complaint                          |
+| **Story**        | View complaint form                |
+| **Preconditions**| tempUser token set in localStorage |
+
+**Steps**:
+1. Navigate to the home page
+2. Dismiss all dialogs (Welcome + Cookie banners)
+3. Set tempUser token in browser localStorage
+4. Navigate to the Complaint page (`/#/complain`)
+
+**Expected Result**:
+The following complaint form elements are visible/attached:
+- Message textarea (`#complaintMessage`)
+- File upload input (`#file`)
+- Submit button (`#submitButton`)
+
+---
+
+### 9. Forgot Password
+
+**File**: `tests/ui/sanity/forgotPassword.spec.js`
+**Suite**: `Forgot Password`
+**Status**: **SKIPPED** — Material Design `mat-label` overlay intercepts pointer events; `{force: true}` fill bypasses overlay but does not trigger Angular change detection, leaving the reset button disabled. Needs investigation.
+**Preconditions**: Temporary user created via API (`tempUser` fixture).
+**Cleanup**: Temporary user is automatically deleted after test.
+
+---
+
+#### TC-UI-S-017: Should reset password with correct security answer *(SKIPPED)*
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Critical                           |
+| **Feature**      | Forgot Password                    |
+| **Story**        | Successful password reset          |
+| **Preconditions**| tempUser created with securityAnswer "default" |
+| **Status**       | Skipped — mat-label overlay issue  |
+
+**Steps**:
+1. Navigate to the Forgot Password page (`/#/forgot-password`)
+2. Enter tempUser email into the Email field
+3. Press Tab to trigger security question loading
+4. Enter `default` into the Security Answer field
+5. Enter new password (`ResetPass123!`) into the New Password and Repeat Password fields
+6. Click the Reset button
+
+**Expected Result**:
+User is redirected to the Login page. Login via API with the new password succeeds (status 200).
+
+---
+
+#### TC-UI-S-018: Should show error with wrong security answer *(SKIPPED)*
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Forgot Password                    |
+| **Story**        | Wrong security answer              |
+| **Preconditions**| tempUser created with securityAnswer "default" |
+| **Status**       | Skipped — mat-label overlay issue  |
+
+**Steps**:
+1. Navigate to the Forgot Password page
+2. Enter tempUser email into the Email field
+3. Press Tab to trigger security question loading
+4. Enter `WrongAnswer` into the Security Answer field
+5. Enter new password into the New Password and Repeat Password fields
+6. Click the Reset button
+
+**Expected Result**:
+An error message is displayed indicating the answer is incorrect.
+
+---
+
+### 16. Product Detail
+
+**File**: `tests/ui/regression/productDetail.spec.js`
+**Suite**: `Product Detail`
+**Preconditions**: Home page is loaded via `homePage` fixture (banners dismissed)
+
+---
+
+#### TC-UI-R-013: Should display product detail dialog with all fields
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Product Detail                     |
+| **Story**        | View product details               |
+| **Preconditions**| User is on Home page               |
+
+**Steps**:
+1. Click on the "Apple Juice" product name to open the detail dialog
+
+**Expected Result**:
+The product detail dialog is displayed with:
+- Product name (`h1`) visible
+- Product image visible
+- Product price visible
+
+---
+
+#### TC-UI-R-014: Should close product detail dialog
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Product Detail                     |
+| **Story**        | Close detail dialog                |
+| **Preconditions**| User is on Home page               |
+
+**Steps**:
+1. Click on the "Apple Juice" product name to open the detail dialog
+2. Wait for the product name to be visible
+3. Click the Close button (`button[aria-label="Close Dialog"]`)
+
+**Expected Result**:
+The product detail dialog is closed. Product name is no longer visible.
+
+---
+
+### 17. Search Extended
+
+**File**: `tests/ui/regression/searchExtended.spec.js`
+**Suite**: `Search Extended`
+**Preconditions**: Home page is loaded via `homePage` fixture (banners dismissed)
+
+---
+
+#### TC-UI-R-015: Should display product names matching search query
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Search                             |
+| **Story**        | Search results match query         |
+| **Preconditions**| User is on Home page               |
+
+**Steps**:
+1. Click the search icon in the header
+2. Enter `Juice` into the search field
+3. Press Enter
+4. Wait for product cards to load
+
+**Expected Result**:
+- At least one product is displayed in the results
+- At least one product name contains the word "juice" (note: Juice Shop searches both name and description, so some results may match on description only)
+
+---
+
+#### TC-UI-R-016: Should persist search query in URL
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Search                             |
+| **Story**        | Search query in URL                |
+| **Preconditions**| User is on Home page               |
+
+**Steps**:
+1. Click the search icon in the header
+2. Enter `Apple` into the search field
+3. Press Enter
+4. Wait for product cards to load
+
+**Expected Result**:
+The browser URL contains the search query `Apple`.
+
+---
+
+### 18. Sidebar Navigation
+
+**File**: `tests/ui/regression/sidebar.spec.js`
+**Suite**: `Sidebar Navigation`
+**Preconditions**: Home page is loaded via `homePage` fixture (banners dismissed)
+
+---
+
+#### TC-UI-R-017: Should open sidebar and navigate to About page
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Navigation                         |
+| **Story**        | Sidebar to About                   |
+| **Preconditions**| User is on Home page               |
+
+**Steps**:
+1. Click the hamburger menu button (`button[aria-label="Open Sidenav"]`)
+2. Wait for the sidebar to appear
+3. Click the "About" link in the sidebar
+
+**Expected Result**:
+User is navigated to the About page (`/#/about`). The "About Us" heading is visible.
+
+---
+
+#### TC-UI-R-018: Should navigate to Complaint page from sidebar
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Navigation                         |
+| **Story**        | Sidebar to Complaint               |
+| **Preconditions**| tempUser logged in via UI          |
+
+**Steps**:
+1. Log in as tempUser via UI
+2. Click the hamburger menu button
+3. Wait for the sidebar to appear
+4. Click the "Complaint" link in the sidebar
+
+**Expected Result**:
+User is navigated to the Complaint page (`/#/complain`). The message textarea (`#complaintMessage`) is visible.
+
+---
+
+### 19. Score Board
+
+**File**: `tests/ui/regression/scoreBoard.spec.js`
+**Suite**: `Score Board`
+
+---
+
+#### TC-UI-R-019: Should display score board with challenges
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Score Board                        |
+| **Story**        | View challenges                    |
+
+**Steps**:
+1. Navigate directly to the Score Board page (`/#/score-board`)
+2. Dismiss all dialogs (Welcome + Cookie banners)
+
+**Expected Result**:
+- "Hacking Challenges" progress section is visible
+- "Challenges Solved" counter is visible
+
+---
+
+### 20. Deluxe Membership
+
+**File**: `tests/ui/regression/deluxe.spec.js`
+**Suite**: `Deluxe Membership`
+**Preconditions**: Temporary user created via API (`tempUser` fixture).
+**Cleanup**: Temporary user is automatically deleted after test.
+
+---
+
+#### TC-UI-R-020: Should display deluxe membership page with pricing
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Deluxe Membership                  |
+| **Story**        | View membership page               |
+| **Preconditions**| tempUser logged in via UI          |
+
+**Steps**:
+1. Log in as tempUser via UI
+2. Navigate to the Deluxe Membership page (`/#/deluxe-membership`)
+
+**Expected Result**:
+The page body contains the text "deluxe" (case-insensitive), confirming the membership page loaded.
+
+---
+
+### 21. Forgot Password Extended
+
+**File**: `tests/ui/regression/forgotPassword.spec.js`
+**Suite**: `Forgot Password Extended`
+**Preconditions**: Temporary user created via API (`tempUser` fixture).
+**Cleanup**: Temporary user is automatically deleted after test.
+
+---
+
+#### TC-UI-R-021: Should show security question after entering email
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Forgot Password                    |
+| **Story**        | Security question display          |
+| **Preconditions**| tempUser registered with security question |
+
+**Steps**:
+1. Navigate to the Forgot Password page (`/#/forgot-password`)
+2. Dismiss all dialogs
+3. Enter the tempUser's email into the Email field
+4. Press Tab to trigger the security question lookup
+
+**Expected Result**:
+The Security Answer input field (`#securityAnswer`) becomes visible, indicating the security question was loaded for the entered email.
+
+---
+
+### 22. Order History
+
+**File**: `tests/ui/regression/orderHistory.spec.js`
+**Suite**: `Order History`
+**Preconditions**: Temporary user created via API (`tempUser` fixture).
+**Cleanup**: Temporary user is automatically deleted after test.
+
+---
+
+#### TC-UI-R-022: Should display order history page for logged-in user
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Order History                      |
+| **Story**        | View order history                 |
+| **Preconditions**| tempUser logged in via UI          |
+
+**Steps**:
+1. Log in as tempUser via UI
+2. Navigate to the Order History page (`/#/order-history`)
+
+**Expected Result**:
+- The page loads without errors
+- The URL contains `order-history`
+- The page body content is present (may be empty for new user with no orders)
+
+---
+
+Now let me also add the new basket regression tests (TC-UI-R-023, TC-UI-R-024) to the existing Basket Page section. These are added to the existing `tests/ui/regression/basket.spec.js`.
+
+#### TC-UI-R-023: Should increase product quantity in basket
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Basket                             |
+| **Story**        | Increase quantity                  |
+| **Preconditions**| tempUser with product (ProductId=1, qty=1) in basket |
+
+**Steps**:
+1. Add a product (ProductId=1, quantity=1) to tempUser's basket via API
+2. Log in as tempUser via UI
+3. Navigate to the Basket page (`/#/basket`)
+4. Note the initial quantity of the first item
+5. Click the increase quantity button for the first item
+
+**Expected Result**:
+The quantity of the first item increases by 1 (newQty = initialQty + 1).
+
+---
+
+#### TC-UI-R-024: Should remove product from basket via UI
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Basket                             |
+| **Story**        | Remove item                        |
+| **Preconditions**| tempUser with product (ProductId=1, qty=1) in basket |
+
+**Steps**:
+1. Add a product (ProductId=1, quantity=1) to tempUser's basket via API
+2. Log in as tempUser via UI
+3. Navigate to the Basket page (`/#/basket`)
+4. Click the remove button for the first item
+
+**Expected Result**:
+The basket total price shows `0`, confirming the item was removed and the basket is now empty.
+
+---
+
+Now append the new API sanity tests to the existing sections:
+
+#### TC-API-S-008: Should return list of security questions
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Critical                           |
+| **Feature**      | Security Questions API             |
+| **Story**        | Get all questions                  |
+
+**Steps**:
+1. Send GET `/api/SecurityQuestions` (no authentication required)
+
+**Expected Result**:
+- HTTP status code: `200`
+- `data` array has at least one item
+- Each item has `id` (number) and `question` (string) properties
+
+---
+
+#### TC-API-S-009: Should return single product by ID
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Products API                       |
+| **Story**        | Get product by ID                  |
+
+**Steps**:
+1. Send GET `/api/Products/1` with admin auth token
+
+**Expected Result**:
+- HTTP status code: `200`
+- `data.id` equals `1`
+- `data.name` is a non-empty string
+- `data.price` is defined
+- `data.description` is defined
+
+---
+
+#### TC-API-S-010: Should return 404 for non-existent product
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Products API                       |
+| **Story**        | Non-existent product               |
+
+**Steps**:
+1. Send GET `/api/Products/99999` with admin auth token
+
+**Expected Result**:
+- HTTP status code: `404`
+
+---
+
+#### TC-API-S-011: Should return empty results for non-matching search
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Products API                       |
+| **Story**        | Empty search results               |
+
+**Steps**:
+1. Send GET `/rest/products/search?q=xyznonexistent12345`
+
+**Expected Result**:
+- HTTP status code: `200`
+- `data` array is empty (length equals 0)
+
+---
+
+#### TC-API-S-012: Should reject login with empty credentials
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Authentication API                 |
+| **Story**        | Empty credentials                  |
+
+**Steps**:
+1. Send POST `/rest/user/login` with empty email (`""`) and empty password (`""`)
+
+**Expected Result**:
+- HTTP status code: `401`
+
+---
+
+#### TC-API-S-013: Should return token for SQL injection in email
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Critical                           |
+| **Feature**      | Authentication API                 |
+| **Story**        | SQL injection attempt              |
+
+**Steps**:
+1. Send POST `/rest/user/login` with email `' OR 1=1--` and any password
+
+**Expected Result**:
+- HTTP status code: `200`
+- Response contains `authentication.token`
+- **Note**: This documents a known intentional SQL injection vulnerability in OWASP Juice Shop (educational security application)
+
+---
+
+#### TC-API-S-014: Should return user data via authentication details
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Authentication API                 |
+| **Story**        | Authentication details             |
+
+**Steps**:
+1. Obtain admin JWT token via login
+2. Send GET `/rest/user/whoami` with Bearer auth header
+
+**Expected Result**:
+- HTTP status code: `200`
+- `user.email` is a non-empty string containing `@`
+
+---
+
+#### TC-API-S-015: Should change password via API
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Critical                           |
+| **Feature**      | Authentication API                 |
+| **Story**        | Change password API                |
+| **Preconditions**| tempUser created via fixture       |
+| **Cleanup**      | tempUser deleted automatically     |
+
+**Steps**:
+1. Send GET `/rest/user/change-password?current=TempUser123!&new=Changed123!&repeat=Changed123!` with tempUser Bearer auth token
+
+**Expected Result**:
+- HTTP status code: `200`
+- Login with new password (`Changed123!`) succeeds (status 200)
+- Login with old password (`TempUser123!`) fails (status 401)
+
+---
+
+### 30. Address API
+
+**File**: `tests/api/regression/address.api.spec.js`
+**Suite**: `Address API`
+**Preconditions**: Temporary user created via API (`tempUser` fixture).
+**Cleanup**: Created addresses are cleaned up in afterEach. Temporary user is automatically deleted.
+
+---
+
+#### TC-API-R-007: Should create a new address
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Critical                           |
+| **Feature**      | Address API                        |
+| **Story**        | Create address                     |
+
+**Steps**:
+1. Send POST `/api/Addresss` with address data (fullName, streetAddress, city, state, zipCode, country from TEST_DATA.address) and tempUser auth token
+
+**Expected Result**:
+- HTTP status code: `201`
+- `data.fullName` matches the submitted fullName
+
+---
+
+#### TC-API-R-008: Should get all addresses for user
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Address API                        |
+| **Story**        | Get addresses                      |
+
+**Steps**:
+1. Create an address via API for tempUser
+2. Send GET `/api/Addresss` with tempUser auth token
+
+**Expected Result**:
+- HTTP status code: `200`
+- `data` array has at least one address
+
+---
+
+#### TC-API-R-009: Should delete address by ID
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Address API                        |
+| **Story**        | Delete address                     |
+
+**Steps**:
+1. Create an address via API for tempUser
+2. Send DELETE `/api/Addresss/<id>` with tempUser auth token
+
+**Expected Result**:
+- HTTP status code: `200`
+
+---
+
+### 31. Card API
+
+**File**: `tests/api/regression/card.api.spec.js`
+**Suite**: `Card API`
+**Preconditions**: Temporary user created via API (`tempUser` fixture).
+**Cleanup**: Created cards are cleaned up in afterEach. Temporary user is automatically deleted.
+
+---
+
+#### TC-API-R-010: Should create a payment card
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Critical                           |
+| **Feature**      | Card API                           |
+| **Story**        | Create card                        |
+
+**Steps**:
+1. Send POST `/api/Cards` with card data (fullName: "Test User", cardNum: `4111111111111111`, expMonth: 12, expYear: 2099) and tempUser auth token
+
+**Expected Result**:
+- HTTP status code: `201`
+- `data.fullName` equals `Test User`
+
+---
+
+#### TC-API-R-011: Should delete payment card
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Card API                           |
+| **Story**        | Delete card                        |
+
+**Steps**:
+1. Create a payment card via API (cardNum: `4222222222222222`)
+2. Send DELETE `/api/Cards/<id>` with tempUser auth token
+
+**Expected Result**:
+- HTTP status code: `200`
+
+---
+
+### 32. Complaint API
+
+**File**: `tests/api/regression/complaint.api.spec.js`
+**Suite**: `Complaint API`
+**Preconditions**: Temporary user created via API (`tempUser` fixture).
+**Cleanup**: Temporary user is automatically deleted.
+
+---
+
+#### TC-API-R-012: Should create a complaint
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Complaint API                      |
+| **Story**        | Create complaint                   |
+
+**Steps**:
+1. Send POST `/api/Complaints` with complaint data (message: `Test complaint <timestamp>`) and tempUser auth token
+
+**Expected Result**:
+- HTTP status code: `201`
+- `data.message` contains the submitted message text
+
+---
+
+#### TC-API-R-013: Should get all complaints
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Complaint API                      |
+| **Story**        | Get complaints                     |
+
+**Steps**:
+1. Create a complaint via API for tempUser
+2. Send GET `/api/Complaints` with admin auth token
+
+**Expected Result**:
+- HTTP status code: `200`
+- `data` array has at least one complaint
+
+---
+
+### 33. Product Reviews API
+
+**File**: `tests/api/regression/reviews.api.spec.js`
+**Suite**: `Product Reviews API`
+**Preconditions**: Temporary user created via API (`tempUser` fixture).
+**Cleanup**: Temporary user is automatically deleted.
+
+---
+
+#### TC-API-R-014: Should get reviews for a product
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Product Reviews API                |
+| **Story**        | Get reviews                        |
+
+**Steps**:
+1. Send GET `/rest/products/1/reviews`
+
+**Expected Result**:
+- HTTP status code: `200`
+- Response body is an array (may be empty or have existing reviews)
+
+---
+
+#### TC-API-R-015: Should add a review to a product
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Critical                           |
+| **Feature**      | Product Reviews API                |
+| **Story**        | Create review                      |
+
+**Steps**:
+1. Send PUT `/rest/products/1/reviews` with review data (message: `API review <timestamp>`, author: tempUser email) and tempUser auth token
+
+**Expected Result**:
+- HTTP status code: `201`
+
+---
+
+#### TC-API-R-016: Should update basket item quantity
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Basket API                         |
+| **Story**        | Update quantity                    |
+
+**Steps**:
+1. Add a product (ProductId=1, quantity=1) to tempUser's basket via API
+2. Send PUT `/api/BasketItems/<id>` with `{ quantity: 5 }` and tempUser auth token
+
+**Expected Result**:
+- HTTP status code: `200`
+- `data.quantity` equals `5`
+
+---
+
+#### TC-API-R-017: Should not access another user basket (IDOR vulnerability)
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Critical                           |
+| **Feature**      | Basket API                         |
+| **Story**        | Authorization check                |
+
+**Steps**:
+1. Create a second temporary user via API
+2. Send GET `/rest/basket/<secondUser.basketId>` with first tempUser's auth token
+
+**Expected Result**:
+- HTTP status code: `200`
+- **Note**: This documents a known IDOR (Insecure Direct Object Reference) vulnerability in Juice Shop — users CAN access other users' baskets. In a real application, this should return `403`.
+
+---
+
+#### TC-API-R-018: Should reject adding item with non-existent product
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| **Severity**     | Normal                             |
+| **Feature**      | Basket API                         |
+| **Story**        | Invalid product                    |
+
+**Steps**:
+1. Send POST `/api/BasketItems` with `{ BasketId: <basketId>, ProductId: 99999, quantity: 1 }` and tempUser auth token
+
+**Expected Result**:
+- HTTP status code is NOT `200` or `201` (expected `400` or `500` — server rejects the invalid product)
+
+---
+
 ## Summary by Suite
 
-| Suite                  | Package              | Tests | Critical | Normal | Blocker |
-|------------------------|----------------------|-------|----------|--------|---------|
-| Login Page             | `ui/sanity`          | 3     | 2        | 1      | —       |
-| Registration Page      | `ui/sanity`          | 3     | 1        | 2      | —       |
-| Navigation             | `ui/sanity`          | 2     | 1        | 1      | —       |
-| Search                 | `ui/sanity`          | 2     | 1        | 1      | —       |
-| Change Password        | `ui/regression`      | 3     | 1        | 2      | —       |
-| Product Review         | `ui/regression`      | 2     | —        | 2      | —       |
-| Customer Feedback      | `ui/regression`      | 2     | 1        | 1      | —       |
-| Administration Panel   | `ui/regression`      | 2     | 1        | 1      | —       |
-| Basket Page            | `ui/regression`      | 2     | 1        | 1      | —       |
-| Checkout Flow          | `ui/regression`      | 1     | 1        | —      | —       |
-| Auth API               | `api/sanity`         | 3     | 1        | 1      | 1       |
-| Products API           | `api/sanity`         | 2     | 2        | —      | —       |
-| Users API              | `api/sanity`         | 2     | 1        | 1      | —       |
-| Feedback API           | `api/regression`     | 2     | 1        | 1      | —       |
-| Basket API             | `api/regression`     | 2     | 2        | —      | —       |
-| Orders API             | `api/regression`     | 2     | 1        | 1      | —       |
-| **Total**              |                      | **35**| **18**   | **16** | **1**   |
+| Suite                  | Package              | Tests | Active | Skipped | Critical | Normal | Blocker |
+|------------------------|----------------------|-------|--------|---------|----------|--------|---------|
+| Login Page             | `ui/sanity`          | 3     | 3      | —       | 2        | 1      | —       |
+| Registration Page      | `ui/sanity`          | 3     | 3      | —       | 1        | 2      | —       |
+| Navigation             | `ui/sanity`          | 2     | 2      | —       | 1        | 1      | —       |
+| Search                 | `ui/sanity`          | 2     | 2      | —       | 1        | 1      | —       |
+| About Us               | `ui/sanity`          | 1     | 1      | —       | —        | 1      | —       |
+| Pagination             | `ui/sanity`          | 2     | 2      | —       | 1        | 1      | —       |
+| User Profile           | `ui/sanity`          | 2     | 2      | —       | —        | 2      | —       |
+| Complaint              | `ui/sanity`          | 1     | 1      | —       | —        | 1      | —       |
+| Forgot Password        | `ui/sanity`          | 2     | —      | 2       | 1        | 1      | —       |
+| Change Password        | `ui/regression`      | 3     | 3      | —       | 1        | 2      | —       |
+| Product Review         | `ui/regression`      | 2     | 2      | —       | —        | 2      | —       |
+| Customer Feedback      | `ui/regression`      | 2     | 2      | —       | 1        | 1      | —       |
+| Administration Panel   | `ui/regression`      | 2     | 2      | —       | 1        | 1      | —       |
+| Basket Page            | `ui/regression`      | 4     | 4      | —       | 1        | 3      | —       |
+| Checkout Flow          | `ui/regression`      | 1     | 1      | —       | 1        | —      | —       |
+| Product Detail         | `ui/regression`      | 2     | 2      | —       | —        | 2      | —       |
+| Search Extended        | `ui/regression`      | 2     | 2      | —       | —        | 2      | —       |
+| Sidebar Navigation     | `ui/regression`      | 2     | 2      | —       | —        | 2      | —       |
+| Score Board            | `ui/regression`      | 1     | 1      | —       | —        | 1      | —       |
+| Deluxe Membership      | `ui/regression`      | 1     | 1      | —       | —        | 1      | —       |
+| Forgot Password Ext.   | `ui/regression`      | 1     | 1      | —       | —        | 1      | —       |
+| Order History          | `ui/regression`      | 1     | 1      | —       | —        | 1      | —       |
+| Auth API               | `api/sanity`         | 7     | 7      | —       | 3        | 3      | 1       |
+| Products API           | `api/sanity`         | 5     | 5      | —       | 2        | 3      | —       |
+| Users API              | `api/sanity`         | 2     | 2      | —       | 1        | 1      | —       |
+| Security Questions API | `api/sanity`         | 1     | 1      | —       | 1        | —      | —       |
+| Feedback API           | `api/regression`     | 2     | 2      | —       | 1        | 1      | —       |
+| Basket API             | `api/regression`     | 5     | 5      | —       | 3        | 2      | —       |
+| Orders API             | `api/regression`     | 2     | 2      | —       | 1        | 1      | —       |
+| Address API            | `api/regression`     | 3     | 3      | —       | 1        | 2      | —       |
+| Card API               | `api/regression`     | 2     | 2      | —       | 1        | 1      | —       |
+| Complaint API          | `api/regression`     | 2     | 2      | —       | —        | 2      | —       |
+| Product Reviews API    | `api/regression`     | 2     | 2      | —       | 1        | 1      | —       |
+| **Total**              |                      | **73**| **71** | **2**   | **27**   | **45** | **1**   |

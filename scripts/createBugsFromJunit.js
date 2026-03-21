@@ -62,11 +62,19 @@ for (const fail of failures) {
   const summary = `[Auto] Test failed: ${fail.className} — ${fail.testName}`;
 
   try {
-    // Check for existing open bug with similar test name
+    // Check for existing open bug with similar test name (using new POST /search/jql API)
     const searchJql = `project = "${args.projectKey}" AND summary ~ "${fail.testName.replace(/"/g, '\\"')}" AND status != Done AND type = Bug`;
-    const searchUrl = `${args.jiraUrl}/rest/api/3/search?jql=${encodeURIComponent(searchJql)}&maxResults=1`;
+    const searchUrl = `${args.jiraUrl}/rest/api/3/search/jql`;
 
-    const searchRes = await fetch(searchUrl, { headers });
+    const searchRes = await fetch(searchUrl, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        jql: searchJql,
+        maxResults: 1,
+        fields: ['summary', 'status'],
+      }),
+    });
     const searchData = await searchRes.json();
 
     if (searchData.total > 0) {

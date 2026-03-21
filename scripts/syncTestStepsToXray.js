@@ -1,5 +1,5 @@
 // scripts/syncTestStepsToXray.js
-// Парсит TEST_CASES.md, находит Test issues в Xray, добавляет шаги и ожидаемые результаты
+// Парсит TEST_CASES.md, обновляет Test issues в Xray с шагами и ожидаемыми результатами
 // Использование:
 //   node scripts/syncTestStepsToXray.js \
 //     --jiraUrl=https://theromed.atlassian.net \
@@ -20,6 +20,7 @@ const { values: args } = parseArgs({
     projectKey:    { type: 'string' },
     testCasesFile: { type: 'string', default: 'TEST_CASES.md' },
     dryRun:        { type: 'boolean', default: false },
+    debug:         { type: 'boolean', default: false },
   },
 });
 
@@ -37,6 +38,46 @@ const headers = {
   'Authorization': `Basic ${auth}`,
   'Content-Type': 'application/json',
   'Accept': 'application/json',
+};
+
+// ─── Direct mapping: Test Case ID → Xray issue key ───
+// Based on Xray auto-provisioned issues from first Jenkins run
+const TC_TO_XRAY = {
+  'TC-UI-S-001': 'QA-2',   // Should login with valid credentials
+  'TC-UI-S-002': 'QA-3',   // Should show error with invalid credentials
+  'TC-UI-S-003': 'QA-4',   // Should navigate to registration page
+  'TC-UI-S-004': 'QA-7',   // Should register new user via UI
+  'TC-UI-S-005': 'QA-8',   // Should show validation error for invalid email
+  'TC-UI-S-006': 'QA-9',   // Should show error when passwords do not match
+  'TC-UI-S-007': 'QA-5',   // Should navigate to main pages from header
+  'TC-UI-S-008': 'QA-6',   // Should display header elements on home page
+  'TC-UI-S-009': 'QA-10',  // Should find products matching search query
+  'TC-UI-S-010': 'QA-11',  // Should show no results for non-existent product
+  'TC-UI-R-001': 'QA-16',  // Should change password successfully
+  'TC-UI-R-002': 'QA-17',  // Should show error when passwords do not match
+  'TC-UI-R-003': 'QA-18',  // Should show error with wrong current password
+  'TC-UI-R-004': 'QA-22',  // Should write a product review
+  'TC-UI-R-005': 'QA-23',  // Should display existing reviews on product detail
+  'TC-UI-R-006': 'QA-20',  // Should submit feedback with valid captcha
+  'TC-UI-R-007': 'QA-21',  // Should not submit feedback without comment
+  'TC-UI-R-008': 'QA-12',  // Should display registered users in admin panel
+  'TC-UI-R-009': 'QA-13',  // Should display user emails in admin panel
+  'TC-UI-R-010': 'QA-14',  // Should display added product in basket
+  'TC-UI-R-011': 'QA-15',  // Should show empty basket message when no items
+  'TC-UI-R-012': 'QA-19',  // Should complete checkout and see order confirmation
+  'TC-API-S-001': 'QA-24', // Should return JWT token on valid login
+  'TC-API-S-002': 'QA-25', // Should return 401 on invalid credentials
+  'TC-API-S-003': 'QA-26', // Should return user info via whoami
+  'TC-API-S-004': 'QA-27', // Should return list of all products
+  'TC-API-S-005': 'QA-28', // Should return products matching search query
+  'TC-API-S-006': 'QA-29', // Should register a new user
+  'TC-API-S-007': 'QA-30', // Should return 400 for duplicate email
+  'TC-API-R-001': 'QA-33', // Should create feedback via API
+  'TC-API-R-002': 'QA-34', // Should delete feedback via API
+  'TC-API-R-003': 'QA-31', // Should get basket by ID
+  'TC-API-R-004': 'QA-32', // Should add item to basket
+  'TC-API-R-005': 'QA-35', // Should checkout basket with items
+  'TC-API-R-006': 'QA-36', // Should checkout empty basket and return confirmation
 };
 
 // ─── Parse TEST_CASES.md ───
@@ -114,35 +155,10 @@ if (testCases.length === 0) {
   process.exit(1);
 }
 
-// ─── Find Xray Test issues and update steps ───
-
-async function findTestIssue(testName) {
-  // Search for Test issue by summary (Xray auto-provisioned from JUnit)
-  const jql = `project = "${args.projectKey}" AND issuetype = Test AND summary ~ "${testName.replace(/"/g, '\\"')}"`;
-  const url = `${args.jiraUrl}/rest/api/3/search?jql=${encodeURIComponent(jql)}&maxResults=5&fields=summary,status`;
-
-  const res = await fetch(url, { headers });
-  const data = await res.json();
-
-  if (!data.issues || data.issues.length === 0) return null;
-
-  // Find best match — exact or closest summary
-  const exactMatch = data.issues.find(issue =>
-    issue.fields.summary.includes(testName)
-  );
-
-  return exactMatch || data.issues[0];
-}
+// ─── Update Test issues via Jira REST API ───
 
 async function updateTestSteps(issueKey, tc) {
-  // Xray Cloud REST API: Update test steps
-  // Endpoint: PUT /rest/raven/2.0/api/test/{issueKey}/steps
-  // Note: This uses Xray's own REST API, not Jira's
-
-  // For Xray Cloud, we use the Jira REST API to update the description with structured steps
-  // since direct Xray REST API requires separate authentication
-
-  // Build structured description with steps
+  // Build structured description (Atlassian Document Format)
   const content = [];
 
   // Preconditions
@@ -211,18 +227,24 @@ async function updateTestSteps(issueKey, tc) {
   });
 
   const updateUrl = `${args.jiraUrl}/rest/api/3/issue/${issueKey}`;
+  const body = JSON.stringify({
+    fields: {
+      description: {
+        type: 'doc',
+        version: 1,
+        content,
+      },
+    },
+  });
+
+  if (args.debug) {
+    console.log(`    PUT ${updateUrl}`);
+  }
+
   const res = await fetch(updateUrl, {
     method: 'PUT',
     headers,
-    body: JSON.stringify({
-      fields: {
-        description: {
-          type: 'doc',
-          version: 1,
-          content,
-        },
-      },
-    }),
+    body,
   });
 
   if (res.status === 204 || res.status === 200) {
@@ -237,32 +259,32 @@ async function updateTestSteps(issueKey, tc) {
 // ─── Main loop ───
 
 let updatedCount = 0;
-let notFoundCount = 0;
+let skippedCount = 0;
 let errorCount = 0;
 
 for (const tc of testCases) {
-  process.stdout.write(`[${tc.tcId}] "${tc.testName}" → `);
+  const issueKey = TC_TO_XRAY[tc.tcId];
 
-  const issue = await findTestIssue(tc.testName);
-
-  if (!issue) {
-    console.log('NOT FOUND in Xray (skipped)');
-    notFoundCount++;
+  if (!issueKey) {
+    console.log(`[${tc.tcId}] "${tc.testName}" → NO MAPPING (skipped)`);
+    skippedCount++;
     continue;
   }
+
+  process.stdout.write(`[${tc.tcId}] "${tc.testName}" → ${issueKey} `);
 
   if (args.dryRun) {
-    console.log(`WOULD UPDATE ${issue.key} (${tc.steps.length} steps)`);
+    console.log(`(dry run — ${tc.steps.length} steps, would update)`);
     updatedCount++;
     continue;
   }
 
-  const success = await updateTestSteps(issue.key, tc);
+  const success = await updateTestSteps(issueKey, tc);
   if (success) {
-    console.log(`UPDATED ${issue.key} ✓ (${tc.steps.length} steps)`);
+    console.log(`UPDATED (${tc.steps.length} steps)`);
     updatedCount++;
   } else {
-    console.log(`FAILED ${issue.key}`);
+    console.log('FAILED');
     errorCount++;
   }
 
@@ -271,10 +293,5 @@ for (const tc of testCases) {
 }
 
 console.log(`\n${'─'.repeat(50)}`);
-console.log(`Summary: ${updatedCount} updated, ${notFoundCount} not found, ${errorCount} errors`);
-console.log(`Total test cases in file: ${testCases.length}`);
-
-if (notFoundCount > 0) {
-  console.log(`\nNote: ${notFoundCount} test(s) not found in Xray.`);
-  console.log('Make sure you ran a Jenkins build first so Xray auto-provisions Test issues.');
-}
+console.log(`Summary: ${updatedCount} updated, ${skippedCount} skipped, ${errorCount} errors`);
+console.log(`Total test cases: ${testCases.length}`);
