@@ -1311,8 +1311,6 @@ The Security Answer input field (`#securityAnswer`) becomes visible, indicating 
 
 ---
 
-Now let me also add the new basket regression tests (TC-UI-R-023, TC-UI-R-024) to the existing Basket Page section. These are added to the existing `tests/ui/regression/basket.spec.js`.
-
 #### TC-UI-R-023: Should increase product quantity in basket
 
 | Field            | Value                              |
@@ -1354,7 +1352,12 @@ The basket total price shows `0`, confirming the item was removed and the basket
 
 ---
 
-Now append the new API sanity tests to the existing sections:
+### 26. Security Questions API
+
+**File**: `tests/api/sanity/securityQuestions.api.spec.js`
+**Suite**: `Security Questions API`
+
+---
 
 #### TC-API-S-008: Should return list of security questions
 

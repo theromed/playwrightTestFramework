@@ -78,6 +78,55 @@ const TC_TO_XRAY = {
   'TC-API-R-004': 'QA-32', // Should add item to basket
   'TC-API-R-005': 'QA-35', // Should checkout basket with items
   'TC-API-R-006': 'QA-36', // Should checkout empty basket and return confirmation
+
+  // ─── New tests (Batch 1–4, Jenkins run created QA-57..QA-96) ───
+  // UI Sanity — new
+  'TC-UI-S-011': 'QA-57',  // Should display About Us page with company information
+  'TC-UI-S-016': 'QA-58',  // Should display complaint form
+  'TC-UI-S-017': 'QA-59',  // Should reset password with correct security answer (skipped)
+  'TC-UI-S-018': 'QA-60',  // Should show error with wrong security answer (skipped)
+  'TC-UI-S-012': 'QA-61',  // Should display products with pagination
+  'TC-UI-S-013': 'QA-62',  // Should navigate to next page of products
+  'TC-UI-S-014': 'QA-63',  // Should display user profile page
+  'TC-UI-S-015': 'QA-64',  // Should update username on profile page
+
+  // UI Regression — new
+  'TC-UI-R-023': 'QA-65',  // Should increase product quantity in basket
+  'TC-UI-R-024': 'QA-66',  // Should remove product from basket via UI
+  'TC-UI-R-020': 'QA-67',  // Should display deluxe membership page with pricing
+  'TC-UI-R-021': 'QA-68',  // Should show security question after entering email
+  'TC-UI-R-022': 'QA-69',  // Should display order history page for logged-in user
+  'TC-UI-R-013': 'QA-70',  // Should display product detail dialog with all fields
+  'TC-UI-R-014': 'QA-71',  // Should close product detail dialog
+  'TC-UI-R-019': 'QA-72',  // Should display score board with challenges
+  'TC-UI-R-015': 'QA-73',  // Should display product names matching search query
+  'TC-UI-R-016': 'QA-74',  // Should persist search query in URL
+  'TC-UI-R-017': 'QA-75',  // Should open sidebar and navigate to About page
+  'TC-UI-R-018': 'QA-76',  // Should navigate to Complaint page from sidebar
+
+  // API Sanity — new
+  'TC-API-S-012': 'QA-77', // Should reject login with empty credentials
+  'TC-API-S-013': 'QA-78', // Should return token for SQL injection in email
+  'TC-API-S-014': 'QA-79', // Should return user data via authentication details
+  'TC-API-S-015': 'QA-80', // Should change password via API
+  'TC-API-S-009': 'QA-81', // Should return single product by ID
+  'TC-API-S-010': 'QA-82', // Should return 404 for non-existent product
+  'TC-API-S-011': 'QA-83', // Should return empty results for non-matching search
+  'TC-API-S-008': 'QA-84', // Should return list of security questions
+
+  // API Regression — new
+  'TC-API-R-007': 'QA-85', // Should create a new address
+  'TC-API-R-008': 'QA-86', // Should get all addresses for user
+  'TC-API-R-009': 'QA-87', // Should delete address by ID
+  'TC-API-R-016': 'QA-88', // Should update basket item quantity
+  'TC-API-R-017': 'QA-89', // Should not access another user basket (IDOR)
+  'TC-API-R-018': 'QA-90', // Should reject adding item with non-existent product
+  'TC-API-R-010': 'QA-91', // Should create a payment card
+  'TC-API-R-011': 'QA-92', // Should delete payment card
+  'TC-API-R-012': 'QA-93', // Should create a complaint
+  'TC-API-R-013': 'QA-94', // Should get all complaints
+  'TC-API-R-014': 'QA-95', // Should get reviews for a product
+  'TC-API-R-015': 'QA-96', // Should add a review to a product
 };
 
 // ─── Parse TEST_CASES.md ───
