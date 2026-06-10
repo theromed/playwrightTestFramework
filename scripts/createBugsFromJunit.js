@@ -1,6 +1,7 @@
 // scripts/createBugsFromJunit.js
 // Парсит junit-results.xml, для каждого FAIL: создаёт/находит issue в Jira,
-// прикрепляет screenshot, линкует ключ в поле Defects результата TestRail.
+// прикрепляет screenshot. Пишет bugs-map.json для uploadResultsToTestRail.js
+// (TestRail-линковка вынесена туда — теперь один аккуратный результат, без дублей).
 //
 // Обогащение баг-репорта:
 //   - TestRail Case ссылка (clickable C<id>)
@@ -23,7 +24,6 @@ import fs from 'fs';
 import path from 'path';
 import { parseArgs } from 'node:util';
 import { XMLParser } from 'fast-xml-parser';
-import { TestRailClient } from '../config/testrailClient.js';
 
 const { values: args } = parseArgs({
   options: {
@@ -42,13 +42,10 @@ const { values: args } = parseArgs({
     baseUrl:          { type: 'string', default: '' },         // BASE_URL приложения
     gitRepo:          { type: 'string', default: '' },         // напр. theromed/playwrightTestFramework
     gitSha:           { type: 'string', default: '' },         // SHA для GitHub deep-link
-    // TestRail (опционально — если не задано, линковка Defect пропускается)
-    testrailUrl:       { type: 'string' },
-    testrailUser:      { type: 'string' },
-    testrailKey:       { type: 'string' },
-    testrailProjectId: { type: 'string' },
-    testrailSuiteId:   { type: 'string' },
-    testrailRunTitle:  { type: 'string' },
+    // TestRail (нужны только URL для clickable Case-link в баге; результаты заливает отдельный скрипт)
+    testrailUrl:      { type: 'string', default: '' },
+    // Output: маппинг "<className>::<cleanTitle>" -> "<jiraKey>" для uploadResultsToTestRail.js
+    bugsMapOut:       { type: 'string', default: 'bugs-map.json' },
   },
 });
 
@@ -316,37 +313,9 @@ async function attachScreenshotToJira(issueKey, screenshotPath) {
   }
 }
 
-// ─── TestRail (опционально) ───
-let tr = null, runId = null;
-const trReady = args.testrailUrl && args.testrailUser && args.testrailKey
-             && args.testrailProjectId && args.testrailRunTitle;
-if (trReady) {
-  tr = new TestRailClient({ url: args.testrailUrl, user: args.testrailUser, apiKey: args.testrailKey });
-  try {
-    const runs = await tr.getRuns(Number(args.testrailProjectId), args.testrailSuiteId ? Number(args.testrailSuiteId) : undefined);
-    const run = runs.find(r => r.name === args.testrailRunTitle) || runs[0];
-    if (run) { runId = run.id; console.log(`TestRail run resolved: "${run.name}" → R${runId}`); }
-    else console.warn('TestRail: run not found by title — defect linking skipped.');
-  } catch (e) { console.warn(`TestRail: failed to resolve run — ${e.message}`); }
-} else {
-  console.log('TestRail args not provided — defect linking skipped (Jira issues only).');
-}
-
-async function linkDefectInTestRail(caseId, bugKey) {
-  if (!tr || !runId || !caseId) return;
-  try {
-    await tr.addResultForCase(runId, Number(caseId), {
-      status_id: 5,
-      comment: `Auto-linked bug: ${bugKey} (Jenkins #${args.buildNumber})`,
-      defects: bugKey,
-    });
-    console.log(`    TestRail: linked ${bugKey} → C${caseId} in R${runId}`);
-  } catch (e) {
-    console.warn(`    TestRail: link failed for C${caseId}: ${e.message}`);
-  }
-}
-
 // ─── Main loop ───
+// bugsMap: "<className>::<cleanTitle>" -> "<jiraKey>" (читает uploadResultsToTestRail.js)
+const bugsMap = {};
 let created = 0, skipped = 0, errors = 0;
 
 for (const fail of failures) {
@@ -375,7 +344,7 @@ for (const fail of failures) {
           ),
         ] } }),
       });
-      await linkDefectInTestRail(fail.caseId, existingKey);
+      bugsMap[`${fail.className}::${fail.cleanTitle}`] = existingKey;
       skipped++;
       continue;
     }
@@ -396,7 +365,7 @@ for (const fail of failures) {
     if (data.key) {
       console.log(`  Created: ${data.key} — "${fail.cleanTitle}"`);
       if (screenshotPath) await attachScreenshotToJira(data.key, screenshotPath);
-      await linkDefectInTestRail(fail.caseId, data.key);
+      bugsMap[`${fail.className}::${fail.cleanTitle}`] = data.key;
       created++;
     } else {
       console.error(`  Failed to create issue for "${fail.cleanTitle}":`, JSON.stringify(data));
@@ -406,6 +375,11 @@ for (const fail of failures) {
     console.error(`  Error processing "${fail.cleanTitle}":`, e.message);
     errors++;
   }
+}
+
+if (Object.keys(bugsMap).length) {
+  fs.writeFileSync(args.bugsMapOut, JSON.stringify(bugsMap, null, 2) + '\n');
+  console.log(`\nWrote ${args.bugsMapOut} (${Object.keys(bugsMap).length} entries — used by uploadResultsToTestRail.js for Defects)`);
 }
 
 console.log(`\nSummary: ${created} created, ${skipped} skipped (existing), ${errors} errors`);

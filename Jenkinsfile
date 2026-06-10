@@ -143,33 +143,6 @@ pipeline {
             }
         }
 
-        stage('Upload to TestRail') {
-            steps {
-                withCredentials([
-                    usernamePassword(credentialsId: 'testrail-creds',
-                                     usernameVariable: 'TR_USER',
-                                     passwordVariable: 'TR_KEY')
-                ]) {
-                    sh '''#!/bin/bash
-                        set -e
-                        python3 -m venv .venv && . .venv/bin/activate
-                        pip install -q trcli
-                        # parse_junit создаёт Run и проставляет статусы; матчинг по property test_id
-                        trcli -y \
-                          -h "$TESTRAIL_URL" \
-                          -u "$TR_USER" \
-                          -p "$TR_KEY" \
-                          --project "$TESTRAIL_PROJECT" \
-                          parse_junit \
-                            --suite-id "$TESTRAIL_SUITE_ID" \
-                            --title "$TESTRAIL_RUN_TITLE" \
-                            --case-matcher property \
-                            -f junit-results.xml
-                    '''
-                }
-            }
-        }
-
         stage('Create Bugs for Failures') {
             when {
                 expression { env.TEST_EXIT_CODE != '0' }
@@ -177,9 +150,7 @@ pipeline {
             steps {
                 withCredentials([
                     usernamePassword(credentialsId: 'jira-api-token',
-                                     usernameVariable: 'JIRA_USER', passwordVariable: 'JIRA_TOKEN'),
-                    usernamePassword(credentialsId: 'testrail-creds',
-                                     usernameVariable: 'TR_USER', passwordVariable: 'TR_KEY')
+                                     usernameVariable: 'JIRA_USER', passwordVariable: 'JIRA_TOKEN')
                 ]) {
                     sh '''#!/bin/bash
                         set -e
@@ -201,11 +172,40 @@ pipeline {
                             --gitRepo="$GIT_REPO" \
                             --gitSha="$GIT_SHA" \
                             --testrailUrl=$TESTRAIL_URL \
-                            --testrailUser=$TR_USER \
-                            --testrailKey=$TR_KEY \
-                            --testrailProjectId=$TESTRAIL_PROJECT_ID \
-                            --testrailSuiteId=$TESTRAIL_SUITE_ID \
-                            --testrailRunTitle="$TESTRAIL_RUN_TITLE"
+                            --bugsMapOut=bugs-map.json
+                    '''
+                }
+            }
+        }
+
+        stage('Upload Results to TestRail') {
+            steps {
+                withCredentials([
+                    usernamePassword(credentialsId: 'testrail-creds',
+                                     usernameVariable: 'TR_USER',
+                                     passwordVariable: 'TR_KEY')
+                ]) {
+                    sh '''#!/bin/bash
+                        set -e
+                        GIT_SHA=$(git rev-parse HEAD)
+                        GIT_BRANCH_NAME=${GIT_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}
+                        node scripts/uploadResultsToTestRail.js \
+                            --junit=junit-results.xml \
+                            --url=$TESTRAIL_URL \
+                            --user=$TR_USER \
+                            --key=$TR_KEY \
+                            --projectId=$TESTRAIL_PROJECT_ID \
+                            --suiteId=$TESTRAIL_SUITE_ID \
+                            --runTitle="$TESTRAIL_RUN_TITLE" \
+                            --bugsMap=bugs-map.json \
+                            --allureDir=allure-results \
+                            --testEnv="$TEST_ENV" \
+                            --branch="$GIT_BRANCH_NAME" \
+                            --baseUrl="$BASE_URL" \
+                            --buildUrl=$BUILD_URL \
+                            --buildNumber=$BUILD_NUMBER \
+                            --gitRepo="$GIT_REPO" \
+                            --gitSha="$GIT_SHA"
                     '''
                 }
             }
