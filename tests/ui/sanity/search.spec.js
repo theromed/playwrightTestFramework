@@ -9,7 +9,7 @@ test.describe('Search', () => {
     await allure.story('Successful search');
 
     // Arrange
-    const query = 'juice';
+    const query = 'juice!';
 
     // Act
     await pm.searchInteractions.searchFor(query);
