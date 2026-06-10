@@ -325,14 +325,17 @@ for (const fail of failures) {
 
   try {
     // Dedup
-    const jql = `project = "${args.projectKey}" AND summary ~ "${fail.cleanTitle.replace(/"/g, '\\"')}" AND status != Done AND type = "${args.issueType}"`;
+    // ORDER BY created ASC — комментим самый ранний issue, не плодим дубли.
+    // /search/jql (Jira Cloud) возвращает issues[] без поля total,
+    // проверяем длину массива, не searchData.total.
+    const jql = `project = "${args.projectKey}" AND summary ~ "${fail.cleanTitle.replace(/"/g, '\\"')}" AND status != Done AND type = "${args.issueType}" ORDER BY created ASC`;
     const searchRes = await fetch(`${args.jiraUrl}/rest/api/3/search/jql`, {
       method: 'POST', headers: jiraHeaders,
       body: JSON.stringify({ jql, maxResults: 1, fields: ['summary', 'status'] }),
     });
     const searchData = await searchRes.json();
 
-    if (searchData.total > 0) {
+    if (searchData.issues?.length > 0) {
       const existingKey = searchData.issues[0].key;
       console.log(`  Skip: "${fail.cleanTitle}" — issue exists: ${existingKey}`);
       await fetch(`${args.jiraUrl}/rest/api/3/issue/${existingKey}/comment`, {
