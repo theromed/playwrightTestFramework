@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { test as base } from '@playwright/test';
 import { POManager }  from '../framework/POManager.js';
 import { AuthAPI }     from '../helpers/api/requests/auth.api.js';
@@ -16,6 +17,22 @@ import { ENV }         from '../config/env.js';
 import { URLS }        from '../config/urls.js';
 
 export const test = base.extend({
+  // Авто: проставляет TestRail case-id как annotation `test_id`,
+  // который JUnit-репортёр (embedAnnotationsAsProperties:true) пишет
+  // в <property name="test_id" value="C123"/> для trcli --case-matcher property.
+  _trCaseId: [async ({}, use, testInfo) => {
+    try {
+      const map = JSON.parse(
+        fs.readFileSync(new URL('../config/specToCase.json', import.meta.url), 'utf-8')
+      );
+      const cid = map[`${testInfo.project.name}::${testInfo.title}`];
+      if (cid) testInfo.annotations.push({ type: 'test_id', description: String(cid) });
+    } catch {
+      // specToCase.json ещё не сгенерирован — пропускаем (локальный прогон без TestRail)
+    }
+    await use();
+  }, { auto: true }],
+
   // Auto-flush API logs to Allure after each test
   _flushLogs: [async ({}, use) => {
     await use();

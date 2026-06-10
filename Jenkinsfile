@@ -40,6 +40,17 @@ pipeline {
         BASE_URL        = "${params.BASE_URL ?: 'http://localhost:3000'}"
         LOG_LEVEL       = 'info'
         RUN_TIMESTAMP   = sh(script: 'date +%Y%m%d_%H%M%S', returnStdout: true).trim()
+
+        // ─── Jira (баг-трекер) ───
+        JIRA_URL        = 'https://theromed.atlassian.net'
+
+        // ─── TestRail ───
+        TESTRAIL_URL        = 'https://romed.testrail.io'
+        TESTRAIL_PROJECT    = 'Juice Shop QA'
+        TESTRAIL_PROJECT_ID = '3'
+        TESTRAIL_SUITE_ID   = '7'
+        TEST_ENV            = "${params.BASE_URL.contains('staging') ? 'Staging' : params.BASE_URL.contains('production') ? 'Production' : 'Local'}"
+        TESTRAIL_RUN_TITLE  = "Automated Run #${env.BUILD_NUMBER} (${params.TEST_SUITE ?: 'all'}) - ${params.BASE_URL.contains('staging') ? 'Staging' : params.BASE_URL.contains('production') ? 'Production' : 'Local'}"
     }
 
     options {
@@ -129,35 +140,29 @@ pipeline {
             }
         }
 
-        stage('Import to Xray') {
+        stage('Upload to TestRail') {
             steps {
-                script {
-                    def suite = params.TEST_SUITE ?: 'all'
-
-                    // Определяем Test Plan по типу прогона
-                    def testPlanKey = ''
-                    switch(suite) {
-                        case 'ui-sanity':
-                        case 'api-sanity':
-                            testPlanKey = 'QA-51'   // Sanity Plan
-                            break
-                        case 'all':
-                            testPlanKey = 'QA-52'   // Regression Plan
-                            break
-                        default:
-                            testPlanKey = 'QA-53'   // Ad-hoc Plan
-                    }
-
-                    def testEnv = params.BASE_URL.contains('staging') ? 'Staging' :
-                                  params.BASE_URL.contains('production') ? 'Production' : 'Local'
-
-                    step([$class: 'XrayImportBuilder',
-                        endpointName: '/junit',
-                        importFilePath: 'junit-results.xml',
-                        importToSameExecution: 'true',
-                        projectKey: 'QA',
-                        serverInstance: '4995819d-31bd-4f50-9571-da943e6d80fc'
-                    ])
+                withCredentials([
+                    usernamePassword(credentialsId: 'testrail-creds',
+                                     usernameVariable: 'TR_USER',
+                                     passwordVariable: 'TR_KEY')
+                ]) {
+                    sh '''#!/bin/bash
+                        set -e
+                        python3 -m venv .venv && . .venv/bin/activate
+                        pip install -q trcli
+                        # parse_junit создаёт Run и проставляет статусы; матчинг по property test_id
+                        trcli -y \
+                          -h "$TESTRAIL_URL" \
+                          -u "$TR_USER" \
+                          -p "$TR_KEY" \
+                          --project "$TESTRAIL_PROJECT" \
+                          parse_junit \
+                            --suite-id "$TESTRAIL_SUITE_ID" \
+                            --title "$TESTRAIL_RUN_TITLE" \
+                            --case-matcher property \
+                            -f junit-results.xml
+                    '''
                 }
             }
         }
@@ -168,21 +173,27 @@ pipeline {
             }
             steps {
                 withCredentials([
-                    usernamePassword(
-                        credentialsId: 'jira-api-token',
-                        usernameVariable: 'JIRA_USER',
-                        passwordVariable: 'JIRA_TOKEN'
-                    )
+                    usernamePassword(credentialsId: 'jira-api-token',
+                                     usernameVariable: 'JIRA_USER', passwordVariable: 'JIRA_TOKEN'),
+                    usernamePassword(credentialsId: 'testrail-creds',
+                                     usernameVariable: 'TR_USER', passwordVariable: 'TR_KEY')
                 ]) {
                     sh '''#!/bin/bash
                         node scripts/createBugsFromJunit.js \
                             --junit=junit-results.xml \
-                            --jiraUrl=https://theromed.atlassian.net \
+                            --jiraUrl=$JIRA_URL \
                             --jiraUser=$JIRA_USER \
                             --jiraToken=$JIRA_TOKEN \
                             --projectKey=KAN \
+                            --issueType=Task \
                             --buildUrl=$BUILD_URL \
-                            --buildNumber=$BUILD_NUMBER
+                            --buildNumber=$BUILD_NUMBER \
+                            --testrailUrl=$TESTRAIL_URL \
+                            --testrailUser=$TR_USER \
+                            --testrailKey=$TR_KEY \
+                            --testrailProjectId=$TESTRAIL_PROJECT_ID \
+                            --testrailSuiteId=$TESTRAIL_SUITE_ID \
+                            --testrailRunTitle="$TESTRAIL_RUN_TITLE"
                     '''
                 }
             }
