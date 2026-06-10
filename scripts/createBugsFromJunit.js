@@ -322,13 +322,19 @@ for (const fail of failures) {
   const allure = findAllureFor(fail);
   const screenshotPath = fail.attachments.find(a => /test-failed-\d+\.png$/.test(a)) || null;
   const summary = `[Auto] Test failed: ${fail.className} — ${fail.cleanTitle}`;
+  // Жёсткий ключ для дедупа: label по TestRail case-id (если test_id есть).
+  // Не зависит от изменений summary/имени теста, не подвержен fuzzy text-match.
+  const trLabel = fail.caseId ? `testrail-C${fail.caseId}` : null;
 
   try {
-    // Dedup
-    // ORDER BY created ASC — комментим самый ранний issue, не плодим дубли.
-    // /search/jql (Jira Cloud) возвращает issues[] без поля total,
-    // проверяем длину массива, не searchData.total.
-    const jql = `project = "${args.projectKey}" AND summary ~ "${fail.cleanTitle.replace(/"/g, '\\"')}" AND status != Done AND type = "${args.issueType}" ORDER BY created ASC`;
+    // Dedup: ищем НЕзакрытый issue с тем же test_id.
+    // Если test_id нет (кейс не замаплен в TestRail) — fallback на summary-match.
+    // ORDER BY created ASC — комментим самый ранний, не плодим дубли.
+    // /search/jql (Jira Cloud) возвращает issues[] без поля total — проверяем длину.
+    const dedupBy = trLabel
+      ? `labels = "${trLabel}"`
+      : `summary ~ "${fail.cleanTitle.replace(/"/g, '\\"')}"`;
+    const jql = `project = "${args.projectKey}" AND ${dedupBy} AND status != Done AND type = "${args.issueType}" ORDER BY created ASC`;
     const searchRes = await fetch(`${args.jiraUrl}/rest/api/3/search/jql`, {
       method: 'POST', headers: jiraHeaders,
       body: JSON.stringify({ jql, maxResults: 1, fields: ['summary', 'status'] }),
@@ -361,7 +367,7 @@ for (const fail of failures) {
         issuetype: { name: args.issueType },
         summary: summary.slice(0, 255),
         description,
-        labels: ['auto-bug', 'playwright'],
+        labels: ['auto-bug', 'playwright', ...(trLabel ? [trLabel] : [])],
       } }),
     });
     const data = await res.json();
