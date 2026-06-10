@@ -20,6 +20,8 @@ export const test = base.extend({
   // Авто: проставляет TestRail case-id как annotation `test_id`,
   // который JUnit-репортёр (embedAnnotationsAsProperties:true) пишет
   // в <property name="test_id" value="C123"/> для trcli --case-matcher property.
+  // Также пишет playwright_project и test_title — используется
+  // createBugsFromJunit.js для repro-команды и матчинга в allure-results.
   _trCaseId: [async ({}, use, testInfo) => {
     try {
       const map = JSON.parse(
@@ -30,6 +32,8 @@ export const test = base.extend({
     } catch {
       // specToCase.json ещё не сгенерирован — пропускаем (локальный прогон без TestRail)
     }
+    testInfo.annotations.push({ type: 'playwright_project', description: testInfo.project.name });
+    testInfo.annotations.push({ type: 'test_title', description: testInfo.title });
     await use();
   }, { auto: true }],
 

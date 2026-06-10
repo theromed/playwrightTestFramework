@@ -44,6 +44,9 @@ pipeline {
         // ─── Jira (баг-трекер) ───
         JIRA_URL        = 'https://theromed.atlassian.net'
 
+        // ─── GitHub (для deep-link в auto-bugs) ───
+        GIT_REPO        = 'theromed/playwrightTestFramework'
+
         // ─── TestRail ───
         TESTRAIL_URL        = 'https://romed.testrail.io'
         TESTRAIL_PROJECT    = 'Juice Shop QA'
@@ -179,6 +182,9 @@ pipeline {
                                      usernameVariable: 'TR_USER', passwordVariable: 'TR_KEY')
                 ]) {
                     sh '''#!/bin/bash
+                        set -e
+                        GIT_SHA=$(git rev-parse HEAD)
+                        GIT_BRANCH_NAME=${GIT_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}
                         node scripts/createBugsFromJunit.js \
                             --junit=junit-results.xml \
                             --jiraUrl=$JIRA_URL \
@@ -188,6 +194,12 @@ pipeline {
                             --issueType=Task \
                             --buildUrl=$BUILD_URL \
                             --buildNumber=$BUILD_NUMBER \
+                            --allureDir=allure-results \
+                            --testEnv="$TEST_ENV" \
+                            --branch="$GIT_BRANCH_NAME" \
+                            --baseUrl="$BASE_URL" \
+                            --gitRepo="$GIT_REPO" \
+                            --gitSha="$GIT_SHA" \
                             --testrailUrl=$TESTRAIL_URL \
                             --testrailUser=$TR_USER \
                             --testrailKey=$TR_KEY \
